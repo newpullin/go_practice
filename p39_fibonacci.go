@@ -3,6 +3,7 @@ package main
 import "fmt"
 
 const LIMIT = 101
+const PROCESS_NUM = 16
 
 var memo [LIMIT]uint64
 
@@ -10,18 +11,9 @@ func main() {
 	jobs := make(chan int, LIMIT)
 	results := make(chan uint64, LIMIT)
 
-	go worker(jobs, results)
-	go worker(jobs, results)
-	go worker(jobs, results)
-	go worker(jobs, results)
-	go worker(jobs, results)
-	go worker(jobs, results)
-	go worker(jobs, results)
-	go worker(jobs, results)
-	go worker(jobs, results)
-	go worker(jobs, results)
-	go worker(jobs, results)
-	go worker(jobs, results)
+	for i := 0; i < PROCESS_NUM; i++ {
+		go worker(jobs, results)
+	}
 
 	for i := 0; i < LIMIT; i++ {
 		jobs <- i
