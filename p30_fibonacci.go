@@ -1,8 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
-const LIMIT = 101
+const LIMIT = 1001
 const PROCESS_NUM = 16
 
 var memo [LIMIT]uint64
@@ -10,6 +13,7 @@ var memo [LIMIT]uint64
 func main() {
 	jobs := make(chan int, LIMIT)
 	results := make(chan uint64, LIMIT)
+	startTime := time.Now()
 
 	for i := 0; i < PROCESS_NUM; i++ {
 		go worker(jobs, results)
@@ -24,10 +28,13 @@ func main() {
 	for j := 0; j < LIMIT; j++ {
 		fmt.Printf("%d = %d\n", j, <-results)
 	}
-
+	elapsedTime := time.Since(startTime)
 	for j := 0; j < LIMIT; j++ {
 		fmt.Printf("%d = %d\n", j, memo[j])
 	}
+
+	fmt.Printf("실행시간 : %s\n", elapsedTime)
+
 }
 
 func worker(jobs <-chan int, results chan<- uint64) {
